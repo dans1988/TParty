@@ -32,6 +32,7 @@ public class PartySystem {
             TeamsSystem.getInstance().createTeamIfNeeded(inviter);
             Set<String> invitees = invites.getOrDefault(inviter, Sets.<String>newHashSet());
             invitees.add(invitedPlayer.getName());
+            invites.put(inviter, invitees);
             showInvited(inviter, invitee);
         } else {
             showNotOnlineError(inviter);
@@ -58,6 +59,8 @@ public class PartySystem {
         if (partyExists) {
             isInvited = invites.get(inviter).contains(invitee);
         }
+        Bukkit.broadcastMessage(partyExists + "");
+        Bukkit.broadcastMessage(isInvited + "");
         return partyExists && isInvited;
     }
 
@@ -73,7 +76,9 @@ public class PartySystem {
 
     private void showInvited(String inviter, String invitee) {
         Bukkit.getPlayer(invitee).sendMessage(ChatColor.GREEN
-                + "You were invited to a party by '" + inviter + ". Do /party accept " + inviter + " to join the party.");
+                + "You were invited to a party by " + ChatColor.GOLD +  inviter + ".");
+        Bukkit.getPlayer(invitee).sendMessage(ChatColor.GREEN +  "To accept use the following command: ");
+        Bukkit.getPlayer(invitee).sendMessage(ChatColor.GREEN + "/party accept " + inviter);
     }
 
     private void showAccepted(String inviter, String invitee) {

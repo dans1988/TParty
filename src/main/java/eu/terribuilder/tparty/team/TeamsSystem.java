@@ -62,6 +62,7 @@ public class TeamsSystem {
             Team team = teamsIterator.next();
             if (team.getName().startsWith(TEAM_NAME_PREFIX)) {
                 team.setPrefix(prefixIterator.next());
+                team.setSuffix(ChatColor.WHITE.toString());
                 sendColorAssignedMessage(team);
             }
         }
@@ -91,9 +92,10 @@ public class TeamsSystem {
             String teamName = team.getName();
             if (teamName.startsWith(TEAM_NAME_PREFIX)) {
                 team.unregister();
-                sendTeamsDeleted();
+
             }
         }
+        sendTeamsDeleted();
     }
 
     public void deleteTeam(String teamName) {

@@ -1,5 +1,5 @@
 name: TParty
-main: eu.terribuilder.tparty.Tparty
+main: eu.terribuilder.tparty.TParty
 version: 1.0
 
 commands:

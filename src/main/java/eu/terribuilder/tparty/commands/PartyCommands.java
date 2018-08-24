@@ -15,8 +15,8 @@ public class PartyCommands implements CommandExecutor {
     private static final String ACCEPT_COMMAND = "accept";
     private static final int ACCEPT_COMMAND_LENGTH = 2;
     private static final String LEAVE_COMMAND = "leave";
-    private static final int SUBCOMMAND_INDEX = 1;
-    private static final int NAME_INDEX = 2;
+    private static final int SUBCOMMAND_INDEX = 0;
+    private static final int NAME_INDEX = 1;
 
     public static final String MAIN_COMMAND = "party";
 

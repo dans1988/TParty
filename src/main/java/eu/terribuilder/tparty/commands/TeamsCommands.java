@@ -15,9 +15,9 @@ public class TeamsCommands implements CommandExecutor {
 
     private static final String CREATE_COMMAND = "create";
     private static final String ERASE_COMMAND = "erase";
-    private static final String COLORIZE_COMMAND = "erase";
-    private static final int NAMES_START_INDEX = 2;
-    private static final int SUBCOMMAND_INDEX = 1;
+    private static final String COLORIZE_COMMAND = "colorize";
+    private static final int NAMES_START_INDEX = 1;
+    private static final int SUBCOMMAND_INDEX = 0;
 
     public static final String MAIN_COMMAND = "teams";
 
