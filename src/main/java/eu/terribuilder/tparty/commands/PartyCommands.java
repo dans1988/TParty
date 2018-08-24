@@ -10,24 +10,22 @@ import org.bukkit.entity.Player;
 
 public class PartyCommands implements CommandExecutor {
 
-    private static final String MAIN_COMMAND = "party";
     private static final String INVITE_COMMAND = "invite";
     private static final int INVITE_COMMAND_LENGTH = 2;
     private static final String ACCEPT_COMMAND = "accept";
     private static final int ACCEPT_COMMAND_LENGTH = 2;
     private static final String LEAVE_COMMAND = "leave";
     private static final int SUBCOMMAND_INDEX = 1;
-    private static final int NAME_INDEX = 1;
+    private static final int NAME_INDEX = 2;
 
-    @Override
+    public static final String MAIN_COMMAND = "party";
+
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
-        if (command.getName().compareToIgnoreCase(MAIN_COMMAND) == 0 && args.length > 0) {
-            processPartyCommands(commandSender, command, label, args);
-        }
+        processPartyCommands(commandSender, args);
         return true;
     }
 
-    private void processPartyCommands(CommandSender commandSender, Command command, String label, String[] args) {
+    private void processPartyCommands(CommandSender commandSender, String[] args) {
         String commandSenderName = commandSender.getName();
         if (args.length == 0) {
             showPartyCommands(commandSenderName);

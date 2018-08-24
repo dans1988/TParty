@@ -1,0 +1,25 @@
+name: TParty
+main: eu.terribuilder.tparty.Tparty
+version: 1.0
+
+commands:
+  party:
+    description: Party commands for all players to use
+    usage: /<command>
+  teams:
+    description: admin commands for /teams
+    usage: /<command>
+    permission: tparty.teams
+    permission-message: You don't have <permission>
+  team:
+    description: admin commands for /team
+    usage: /<command>
+    permission: tparty.team
+    permission-message: You don't have <permission>
+permissions:
+  tparty.team:
+    description: Allows use of /team
+    default: op
+  tparty.teams:
+    description: Allows use of /teams
+    default: op

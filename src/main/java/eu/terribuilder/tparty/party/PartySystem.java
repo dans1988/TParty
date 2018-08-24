@@ -1,6 +1,7 @@
 package eu.terribuilder.tparty.party;
 
 import com.google.common.collect.Sets;
+import eu.terribuilder.tparty.team.TeamsSystem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -29,8 +30,9 @@ public class PartySystem {
         Player invitedPlayer = Bukkit.getPlayer(invitee);
         if (invitedPlayer != null) {
             TeamsSystem.getInstance().createTeamIfNeeded(inviter);
-            Set<String> invitees = invites.getOrDefault(inviter, Sets.newHashSet());
+            Set<String> invitees = invites.getOrDefault(inviter, Sets.<String>newHashSet());
             invitees.add(invitedPlayer.getName());
+            showInvited(inviter, invitee);
         } else {
             showNotOnlineError(inviter);
         }
@@ -41,7 +43,7 @@ public class PartySystem {
             TeamsSystem.getInstance().addToTeamByMembership(inviter, invitee);
             invites.remove(invitee);
         } else {
-            showNotInvitedError(inviter);
+            showNotInvitedError(inviter, invitee);
         }
     }
 
@@ -64,9 +66,19 @@ public class PartySystem {
                 + "Player '" + playerName + "' is not online and can't be invited.");
     }
 
-    private void showNotInvitedError(String inviter) {
-        Bukkit.getPlayer(inviter).sendMessage(ChatColor.RED
+    private void showNotInvitedError(String inviter, String invitee) {
+        Bukkit.getPlayer(invitee).sendMessage(ChatColor.RED
                 + "You were not invited to a party by '" + inviter + "' or the party no longer exists.");
+    }
+
+    private void showInvited(String inviter, String invitee) {
+        Bukkit.getPlayer(invitee).sendMessage(ChatColor.GREEN
+                + "You were invited to a party by '" + inviter + ". Do /party accept " + inviter + " to join the party.");
+    }
+
+    private void showAccepted(String inviter, String invitee) {
+        Bukkit.getPlayer(inviter).sendMessage(ChatColor.GREEN
+                + "Your invite was accepted by '" + invitee + ".");
     }
 
 }
