@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import eu.terribuilder.tparty.team.TeamsSystem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -14,9 +15,13 @@ public class PartySystem {
 
     private static PartySystem partySystem;
     private Map<String, Set<String>> invites;
+    private boolean running;
+    private Integer limit;
 
     private PartySystem() {
-        invites = new HashMap<String, Set<String>>();
+        invites = new HashMap<>();
+        running = false;
+        limit = 1;
     }
 
     public static PartySystem getInstance() {
@@ -27,15 +32,15 @@ public class PartySystem {
     }
 
     public void invite(String inviter, String invitee) {
-        Player invitedPlayer = Bukkit.getPlayer(invitee);
-        if (invitedPlayer != null) {
-            TeamsSystem.getInstance().createTeamIfNeeded(inviter);
-            Set<String> invitees = invites.getOrDefault(inviter, Sets.<String>newHashSet());
-            invitees.add(invitedPlayer.getName());
-            invites.put(inviter, invitees);
-            showInvited(inviter, invitee);
-        } else {
-            showNotOnlineError(inviter);
+        OfflinePlayer invitedPlayer = Bukkit.getPlayer(invitee);
+        TeamsSystem.getInstance().createTeamIfNeeded(inviter);
+        Set<String> invitees = invites.getOrDefault(inviter, Sets.newHashSet());
+        invitees.add(invitedPlayer.getName());
+        invites.put(inviter, invitees);
+        showInvited(inviter, invitee);
+        if (!invitedPlayer.isOnline()) {
+            invitedPlayer.setWhitelisted(true);
+            showWhitelisted(inviter, invitee);
         }
     }
 
@@ -43,6 +48,7 @@ public class PartySystem {
         if (isInvited(inviter, invitee)) {
             TeamsSystem.getInstance().addToTeamByMembership(inviter, invitee);
             invites.remove(invitee);
+            showAccepted(inviter, invitee);
         } else {
             showNotInvitedError(inviter, invitee);
         }
@@ -64,10 +70,11 @@ public class PartySystem {
         return partyExists && isInvited;
     }
 
-    private void showNotOnlineError(String playerName) {
-        Bukkit.getPlayer(playerName).sendMessage(ChatColor.RED
-                + "Player '" + playerName + "' is not online and can't be invited.");
+    private void showWhitelisted(String inviter, String invitee) {
+        Bukkit.getPlayer(inviter).sendMessage(ChatColor.RED
+                + "Player '" + invitee + "' has been whitelisted.");
     }
+
 
     private void showNotInvitedError(String inviter, String invitee) {
         Bukkit.getPlayer(invitee).sendMessage(ChatColor.RED
@@ -83,7 +90,39 @@ public class PartySystem {
 
     private void showAccepted(String inviter, String invitee) {
         Bukkit.getPlayer(inviter).sendMessage(ChatColor.GREEN
-                + "Your invite was accepted by '" + invitee + ".");
+                + "Your invite was accepted by " + invitee + ".");
+
+        Bukkit.getPlayer(invitee).sendMessage(ChatColor.GREEN
+                + "You joined " + invitee + "'s team.");
     }
 
+    public void listInviters(String invitee) {
+        String inviters = "";
+        for (String inviter : invites.keySet()) {
+            Set<String> invitedPlayers = invites.get(inviter);
+            for (String invitedPlayer: invitedPlayers) {
+                if (invitedPlayer.compareToIgnoreCase(invitee) == 0) {
+                    inviters += inviter + " ";
+                }
+            }
+        }
+
+        if (!inviters.isEmpty()) {
+            Player player = Bukkit.getPlayer(invitee);
+            player.sendMessage(ChatColor.GREEN + "You were invited to a party by the following players: " + inviters);
+            player.sendMessage(ChatColor.GREEN + "Do /party accept [name] to join a team");
+        }
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
+    }
+
+    public void setLimit(Integer limit) {
+        this.limit = limit;
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
 }
