@@ -47,11 +47,9 @@ public class TeamsSystem {
         }
     }
 
-    public void addToTeamByMembership(String teamMemberName, String newMemberName) {
+    public Team getTeamByMembership(String teamMemberName) {
         Player teamMember = Bukkit.getPlayer(teamMemberName);
-        Player newMember = Bukkit.getPlayer(newMemberName);
-        Team team = getScoreboard().getPlayerTeam(teamMember);
-        team.addPlayer(newMember);
+        return getScoreboard().getPlayerTeam(teamMember);
     }
 
     public void colorizeTeams() {

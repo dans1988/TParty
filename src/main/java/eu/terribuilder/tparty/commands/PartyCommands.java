@@ -21,7 +21,12 @@ public class PartyCommands implements CommandExecutor {
     public static final String MAIN_COMMAND = "party";
 
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
-        processPartyCommands(commandSender, args);
+        PartySystem partySystem = PartySystem.getInstance();
+        if (partySystem.isRunning()) {
+            processPartyCommands(commandSender, args);
+        } else {
+            showPartySystemNotRunning(commandSender.getName());
+        }
         return true;
     }
 
@@ -76,5 +81,12 @@ public class PartyCommands implements CommandExecutor {
         Player player = Bukkit.getPlayer(playerName);
         player.sendMessage(ChatColor.RED + "You must specify player's name - /party accept [name]");
     }
+
+    private void showPartySystemNotRunning(String playerName) {
+        Player player = Bukkit.getPlayer(playerName);
+        player.sendMessage(ChatColor.RED + "You can't create parties at this moment");
+    }
+
+
 }
 

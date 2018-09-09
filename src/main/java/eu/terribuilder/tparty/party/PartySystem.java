@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Team;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,9 +47,7 @@ public class PartySystem {
 
     public void accept(String inviter, String invitee) {
         if (isInvited(inviter, invitee)) {
-            TeamsSystem.getInstance().addToTeamByMembership(inviter, invitee);
-            invites.remove(invitee);
-            showAccepted(inviter, invitee);
+            checkLimitAndAddToTeam(inviter, invitee);
         } else {
             showNotInvitedError(inviter, invitee);
         }
@@ -57,6 +56,19 @@ public class PartySystem {
     public void leave(String player) {
         TeamsSystem.getInstance().removeFromTeam(player);
         invites.remove(player);
+    }
+
+    private void checkLimitAndAddToTeam(String inviter, String invitee) {
+        Team team = TeamsSystem.getInstance().getTeamByMembership(inviter);
+        if (team != null && team.getSize() < limit) {
+            invites.remove(invitee);
+            showAccepted(inviter, invitee);
+            TeamsSystem.getInstance().addToTeam(team.getName(), invitee);
+        } else if (team.getSize() >= limit){
+            showPartyFull(inviter, invitee);
+        } else if (team == null){
+            showPartyDoesNotExistError(inviter, invitee);
+        }
     }
 
     private boolean isInvited(String inviter, String invitee) {
@@ -79,6 +91,16 @@ public class PartySystem {
     private void showNotInvitedError(String inviter, String invitee) {
         Bukkit.getPlayer(invitee).sendMessage(ChatColor.RED
                 + "You were not invited to a party by '" + inviter + "' or the party no longer exists.");
+    }
+
+    private void showPartyDoesNotExistError(String inviter, String invitee) {
+        Bukkit.getPlayer(invitee).sendMessage(ChatColor.RED
+                + inviter + "'s party no longer exists.");
+    }
+
+    private void showPartyFull(String inviter, String invitee) {
+        Bukkit.getPlayer(invitee).sendMessage(ChatColor.RED
+                + inviter + "'s party is full and you can't join it.");
     }
 
     private void showInvited(String inviter, String invitee) {
@@ -114,15 +136,32 @@ public class PartySystem {
         }
     }
 
-    public void setRunning(boolean running) {
-        this.running = running;
+    public void start(Integer maxPartySize) {
+        this.running = true;
+        this.limit = maxPartySize;
+        broadcastPartyOpen();
     }
 
-    public void setLimit(Integer limit) {
-        this.limit = limit;
+    public void stop() {
+        this.running = false;
+        broadcastPartyClose();
     }
 
     public boolean isRunning() {
         return running;
     }
+
+    private void broadcastPartyOpen() {
+        String message = ChatColor.GREEN
+                + "Party system is now open. You can create parties up to " + limit + " players."
+                + "Do " + ChatColor.YELLOW + " /party " + ChatColor.GREEN + "to see how to create teams.";
+        Bukkit.broadcastMessage(message);
+    }
+
+    private void broadcastPartyClose() {
+        String message = ChatColor.GREEN
+                + "Party system is now closed.";
+        Bukkit.broadcastMessage(message);
+    }
+
 }
