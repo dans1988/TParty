@@ -104,6 +104,7 @@ public class PartySystem {
     }
 
     private void showInvited(String inviter, String invitee) {
+        Bukkit.getPlayer(inviter).sendMessage(ChatColor.GREEN + "You invited " + invitee + " to your party.");
         Bukkit.getPlayer(invitee).sendMessage(ChatColor.GREEN
                 + "You were invited to a party by " + ChatColor.GOLD +  inviter + ".");
         Bukkit.getPlayer(invitee).sendMessage(ChatColor.GREEN +  "To accept use the following command: ");

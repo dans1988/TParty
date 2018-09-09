@@ -1,5 +1,6 @@
 package eu.terribuilder.tparty.team;
 
+import eu.terribuilder.tparty.messages.OpMessenger;
 import eu.terribuilder.tparty.team.color.TeamColors;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -44,6 +45,8 @@ public class TeamsSystem {
             Player player = Bukkit.getPlayer(playerName);
             Team team = getScoreboard().registerNewTeam(getTeamName());
             team.addPlayer(player);
+            OpMessenger.getInstance().messageOPs(ChatColor.ITALIC.toString() + ChatColor.GRAY.toString()
+                    + "[Created team: " + team.getName() + "]");
         }
     }
 
@@ -64,6 +67,8 @@ public class TeamsSystem {
                 sendColorAssignedMessage(team);
             }
         }
+        OpMessenger.getInstance().messageOPs(ChatColor.ITALIC.toString() + ChatColor.GRAY.toString()
+                + "[Teams colorized]");
     }
 
     public void addToTeam(String teamName, String playerName) {
@@ -72,7 +77,9 @@ public class TeamsSystem {
         if (team != null) {
             team.addPlayer(player);
             sendAddedToTeamMessage(player.getPlayer(), team);
+
         }
+
     }
 
     public void removeFromTeam(String playerName) {
@@ -127,12 +134,16 @@ public class TeamsSystem {
         if (player.isOnline()) {
             player.sendMessage(ChatColor.GREEN + "You were added to team " + team.getPrefix() + team.getName() + ".");
         }
+        OpMessenger.getInstance().messageOPs(ChatColor.ITALIC.toString() + ChatColor.GRAY.toString()
+                + "[" + player.getName() + " was added to team " + team.getName() + ".]");
     }
 
     private void sendRemovedFromTeam(Player player, Team team) {
         if (player.isOnline()) {
             player.sendMessage(ChatColor.GOLD + "You were removed from team " + team.getPrefix() + team.getName() + ".");
         }
+        OpMessenger.getInstance().messageOPs(ChatColor.ITALIC.toString() + ChatColor.GRAY.toString()
+                + "[" + player.getName() + " was removed from or left team " + team.getName() + ".]");
     }
 
     private void sendColorAssignedMessage(Team team) {
@@ -146,6 +157,8 @@ public class TeamsSystem {
 
     private void sendTeamDeleted(Team team) {
         messageTeam(team, ChatColor.GOLD + "Your team was removed.");
+        OpMessenger.getInstance().messageOPs(ChatColor.ITALIC.toString() + ChatColor.GRAY.toString()
+                + "[Team " + team.getName() + " was removed.]");
     }
 
     private void messageTeam(Team team, String message) {
