@@ -14,6 +14,7 @@ import java.util.List;
 
 public class TeamsCommands implements CommandExecutor {
 
+    private static final String LIST_COMMAND = "list";
     private static final String CREATE_COMMAND = "create";
     private static final String ERASE_COMMAND = "erase";
     private static final String COLORIZE_COMMAND = "colorize";
@@ -38,6 +39,8 @@ public class TeamsCommands implements CommandExecutor {
         String commandSenderName = commandSender.getName();
         if (args.length == 0) {
             showTeamsCommands(commandSenderName);
+        } else if (args[SUBCOMMAND_INDEX].compareToIgnoreCase(LIST_COMMAND) == 0) {
+            processListCommand(commandSenderName);
         } else if (args[SUBCOMMAND_INDEX].compareToIgnoreCase(CREATE_COMMAND) == 0) {
             processCreateCommand(args);
         } else if (args[SUBCOMMAND_INDEX].compareToIgnoreCase(ERASE_COMMAND) == 0) {
@@ -51,6 +54,10 @@ public class TeamsCommands implements CommandExecutor {
         }
     }
 
+
+    private void processListCommand(String commandSenderName) {
+        TeamsSystem.getInstance().listTeams(commandSenderName);
+    }
 
     private void processPartyOpenCommand(String[] args) {
         Integer maxPartySize = Integer.parseInt(args[PARTY_SIZE_INDEX]);
@@ -100,6 +107,7 @@ public class TeamsCommands implements CommandExecutor {
 
     private void showTeamsCommands(String playerName) {
         Player player = Bukkit.getPlayer(playerName);
+        player.sendMessage(ChatColor.YELLOW + "/teams list - list teams");
         player.sendMessage(ChatColor.YELLOW + "/teams create - create a new team");
         player.sendMessage(ChatColor.YELLOW
                 + "/teams create [name1] [name2] [name3]... - create a new team with players");

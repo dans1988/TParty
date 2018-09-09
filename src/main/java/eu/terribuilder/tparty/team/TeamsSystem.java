@@ -30,8 +30,32 @@ public class TeamsSystem {
         return teamsSystem;
     }
 
+    public void listTeams(String playerName) {
+        for (Team team: getScoreboard().getTeams()) {
+            listPlayers(team.getName(), playerName);
+        }
+    }
+
+    public void listPlayers(String teamName, String playerName) {
+        Player player = Bukkit.getPlayer(playerName);
+        Team team = getScoreboard().getTeam(teamName);
+        if (team != null) {
+            player.sendMessage(team.getPrefix() + team.getName() + ":");
+            for (OfflinePlayer offlinePlayer : team.getPlayers()) {
+                player.sendMessage(team.getPrefix() + offlinePlayer.getName());
+            }
+        } else {
+            showTeamDoesNotExistError(teamName, playerName);
+        }
+    }
+
+
     public void createEmptyTeam() {
-        getScoreboard().registerNewTeam(getTeamName());
+        int currTeamIndex = teamIndex;
+        Team team = getScoreboard().registerNewTeam(getTeamName());
+        colorizeTeam(team, currTeamIndex);
+        OpMessenger.getInstance().messageOPs(ChatColor.ITALIC.toString() + ChatColor.GRAY.toString()
+                + "[Created team: " + team.getName() + "]");
     }
 
     public void createTeamIfNeeded(String playerName) {
@@ -43,8 +67,10 @@ public class TeamsSystem {
     public void createTeam(List<String> playerNames) {
         for (String playerName : playerNames) {
             Player player = Bukkit.getPlayer(playerName);
+            int currTeamIndex = teamIndex;
             Team team = getScoreboard().registerNewTeam(getTeamName());
             team.addPlayer(player);
+            colorizeTeam(team, currTeamIndex);
             OpMessenger.getInstance().messageOPs(ChatColor.ITALIC.toString() + ChatColor.GRAY.toString()
                     + "[Created team: " + team.getName() + "]");
         }
@@ -53,6 +79,13 @@ public class TeamsSystem {
     public Team getTeamByMembership(String teamMemberName) {
         Player teamMember = Bukkit.getPlayer(teamMemberName);
         return getScoreboard().getPlayerTeam(teamMember);
+    }
+
+    private void colorizeTeam(Team team, int teamIndex) {
+        List<String> prefixes = TeamColors.getAllColorPrefixes();
+        team.setPrefix(prefixes.get(teamIndex));
+        team.setSuffix(ChatColor.WHITE.toString());
+        sendColorAssignedMessage(team);
     }
 
     public void colorizeTeams() {
@@ -67,8 +100,7 @@ public class TeamsSystem {
                 sendColorAssignedMessage(team);
             }
         }
-        OpMessenger.getInstance().messageOPs(ChatColor.ITALIC.toString() + ChatColor.GRAY.toString()
-                + "[Teams colorized]");
+        OpMessenger.getInstance().messageOPs(ChatColor.GRAY + "[Teams colorized]");
     }
 
     public void addToTeam(String teamName, String playerName) {
@@ -97,9 +129,9 @@ public class TeamsSystem {
             String teamName = team.getName();
             if (teamName.startsWith(TEAM_NAME_PREFIX)) {
                 team.unregister();
-
             }
         }
+        teamIndex = 0;
         sendTeamsDeleted();
     }
 
@@ -134,7 +166,7 @@ public class TeamsSystem {
         if (player.isOnline()) {
             player.sendMessage(ChatColor.GREEN + "You were added to team " + team.getPrefix() + team.getName() + ".");
         }
-        OpMessenger.getInstance().messageOPs(ChatColor.ITALIC.toString() + ChatColor.GRAY.toString()
+        OpMessenger.getInstance().messageOPs(ChatColor.GRAY
                 + "[" + player.getName() + " was added to team " + team.getName() + ".]");
     }
 
@@ -142,7 +174,7 @@ public class TeamsSystem {
         if (player.isOnline()) {
             player.sendMessage(ChatColor.GOLD + "You were removed from team " + team.getPrefix() + team.getName() + ".");
         }
-        OpMessenger.getInstance().messageOPs(ChatColor.ITALIC.toString() + ChatColor.GRAY.toString()
+        OpMessenger.getInstance().messageOPs(ChatColor.GRAY
                 + "[" + player.getName() + " was removed from or left team " + team.getName() + ".]");
     }
 
@@ -151,13 +183,18 @@ public class TeamsSystem {
                 + team.getPrefix() + "team color" + ChatColor.WHITE.toString() + ".");
     }
 
+    private void showTeamDoesNotExistError(String teamName, String playerName) {
+        Player player = Bukkit.getPlayer(playerName);
+        player.sendMessage(ChatColor.RED + "Team " + teamName + " does not exist.");
+    }
+
     private void sendTeamsDeleted() {
         Bukkit.broadcastMessage(ChatColor.GOLD + "All teams have been deleted.");
     }
 
     private void sendTeamDeleted(Team team) {
         messageTeam(team, ChatColor.GOLD + "Your team was removed.");
-        OpMessenger.getInstance().messageOPs(ChatColor.ITALIC.toString() + ChatColor.GRAY.toString()
+        OpMessenger.getInstance().messageOPs(ChatColor.GRAY
                 + "[Team " + team.getName() + " was removed.]");
     }
 

@@ -10,6 +10,8 @@ import org.bukkit.entity.Player;
 
 public class TeamCommands implements CommandExecutor {
 
+    private static final String LIST_PLAYERS_COMMAND = "list";
+    private static final int MIN_LIST_PLAYERS_COMMAND_LEN = 2;
     private static final String ADD_PLAYER_COMMAND = "add";
     private static final int MIN_ADD_PLAYER_COMMAND_LEN = 4;
     private static final String LEAVE_PLAYER_COMMAND = "leave";
@@ -32,12 +34,21 @@ public class TeamCommands implements CommandExecutor {
         String commandSenderName = commandSender.getName();
         if (args.length == 0) {
             showTeamCommands(commandSenderName);
-        } else if (args[SUBCOMMAND_INDEX].compareToIgnoreCase(ADD_PLAYER_COMMAND) == 0) {
+        } else if (args[SUBCOMMAND_INDEX].compareToIgnoreCase(LIST_PLAYERS_COMMAND) == 0) {
+            processListPlayersCommand(args, commandSenderName);
+        }  else if (args[SUBCOMMAND_INDEX].compareToIgnoreCase(ADD_PLAYER_COMMAND) == 0) {
             processAddPlayerCommand(args);
         } else if (args[SUBCOMMAND_INDEX].compareToIgnoreCase(LEAVE_PLAYER_COMMAND) == 0) {
             processRemovePlayerCommand(args);
         } else if (args[SUBCOMMAND_INDEX].compareToIgnoreCase(DELETE_COMMAND) == 0) {
             processDeleteTeamCommand(args);
+        }
+    }
+
+    private void processListPlayersCommand(String[] args, String commandSenderName) {
+        if (args.length >= MIN_LIST_PLAYERS_COMMAND_LEN) {
+            String teamName = args[TEAM_NAME_INDEX];
+            TeamsSystem.getInstance().listPlayers(teamName, commandSenderName);
         }
     }
 
@@ -65,6 +76,7 @@ public class TeamCommands implements CommandExecutor {
 
     private void showTeamCommands(String playerName) {
         Player player = Bukkit.getPlayer(playerName);
+        player.sendMessage(ChatColor.YELLOW + "/team list [team] - add player to a team");
         player.sendMessage(ChatColor.YELLOW + "/team add [team] [player] - add player to a team");
         player.sendMessage(ChatColor.YELLOW + "/team leave [name] - remove player from his team");
         player.sendMessage(ChatColor.YELLOW + "/team delete [team] - remove a team ");
