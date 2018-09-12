@@ -65,15 +65,16 @@ public class TeamsSystem {
     }
 
     public void createTeam(List<String> playerNames) {
+        int currTeamIndex = teamIndex;
+        Team team = getScoreboard().registerNewTeam(getTeamName());
+        OpMessenger.getInstance().messageOPs(ChatColor.ITALIC.toString() + ChatColor.GRAY.toString()
+                + "[Created team: " + team.getName() + "]");
         for (String playerName : playerNames) {
             Player player = Bukkit.getPlayer(playerName);
-            int currTeamIndex = teamIndex;
-            Team team = getScoreboard().registerNewTeam(getTeamName());
+
             team.addPlayer(player);
-            colorizeTeam(team, currTeamIndex);
-            OpMessenger.getInstance().messageOPs(ChatColor.ITALIC.toString() + ChatColor.GRAY.toString()
-                    + "[Created team: " + team.getName() + "]");
         }
+        colorizeTeam(team, currTeamIndex);
     }
 
     public Team getTeamByMembership(String teamMemberName) {
@@ -138,8 +139,8 @@ public class TeamsSystem {
     public void deleteTeam(String teamName) {
         Team team = getScoreboard().getTeam(teamName);
         if (team != null) {
-            team.unregister();
             sendTeamDeleted(team);
+            team.unregister();
         }
     }
 

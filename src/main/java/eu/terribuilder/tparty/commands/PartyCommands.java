@@ -67,7 +67,8 @@ public class PartyCommands implements CommandExecutor {
 
     private void showPartyCommands(String playerName) {
         Player player = Bukkit.getPlayer(playerName);
-        player.sendMessage(ChatColor.YELLOW + "/party invite [name] - invite a player to your party");
+        player.sendMessage(ChatColor.YELLOW + "/party invite [name] - invite a player to your party," +
+                " this will also whitelist him/her");
         player.sendMessage(ChatColor.YELLOW + "/party accept [name] - accept player's invitation");
         player.sendMessage(ChatColor.YELLOW + "/party leave - leave your current party");
     }

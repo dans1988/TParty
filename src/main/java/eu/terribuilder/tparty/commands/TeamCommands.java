@@ -13,13 +13,13 @@ public class TeamCommands implements CommandExecutor {
     private static final String LIST_PLAYERS_COMMAND = "list";
     private static final int MIN_LIST_PLAYERS_COMMAND_LEN = 2;
     private static final String ADD_PLAYER_COMMAND = "add";
-    private static final int MIN_ADD_PLAYER_COMMAND_LEN = 4;
+    private static final int MIN_ADD_PLAYER_COMMAND_LEN = 3;
     private static final String LEAVE_PLAYER_COMMAND = "leave";
-    private static final int MIN_LEAVE_PLAYER_COMMAND_LEN = 3;
+    private static final int MIN_LEAVE_PLAYER_COMMAND_LEN = 2;
     private static final String DELETE_COMMAND = "delete";
-    private static final int MIN_DELETE_TEAM_LEN = 3;
+    private static final int MIN_DELETE_TEAM_LEN = 2;
     private static final int TEAM_NAME_INDEX = 1;
-    private static final int PLAYER_NAME_INDEX = 2;
+    private static final int PLAYER_NAME_INDEX = 1;
     private static final int SUBCOMMAND_INDEX = 0;
 
     public static final String MAIN_COMMAND = "team";

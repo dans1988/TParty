@@ -1,6 +1,7 @@
 package eu.terribuilder.tparty.team.color;
 
 import com.google.common.collect.Lists;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import java.util.List;
@@ -39,7 +40,7 @@ public class TeamColors {
         }
         for (ChatColor modifier: ORDERED_MODIFIERS) {
             for (ChatColor chatColor: ORDERED_TEAM_COLORS) {
-                prefixes.add(modifier.toString() + chatColor.toString());
+                prefixes.add(chatColor + modifier.toString());
             }
         }
         return prefixes;
