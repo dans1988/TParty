@@ -19,7 +19,8 @@ public class TeamCommands implements CommandExecutor {
     private static final String DELETE_COMMAND = "delete";
     private static final int MIN_DELETE_TEAM_LEN = 2;
     private static final int TEAM_NAME_INDEX = 1;
-    private static final int PLAYER_NAME_INDEX = 1;
+    private static final int LEAVE_PLAYER_NAME_INDEX = 1;
+    private static final int ADD_PLAYER_NAME_INDEX = 2;
     private static final int SUBCOMMAND_INDEX = 0;
 
     public static final String MAIN_COMMAND = "team";
@@ -55,14 +56,14 @@ public class TeamCommands implements CommandExecutor {
     private void processAddPlayerCommand(String[] args) {
         if (args.length >= MIN_ADD_PLAYER_COMMAND_LEN) {
             String teamName = args[TEAM_NAME_INDEX];
-            String playerName = args[PLAYER_NAME_INDEX];
+            String playerName = args[ADD_PLAYER_NAME_INDEX];
             TeamsSystem.getInstance().addToTeam(teamName, playerName);
         }
     }
 
     private void processRemovePlayerCommand(String[] args) {
         if (args.length >= MIN_LEAVE_PLAYER_COMMAND_LEN) {
-            String playerName = args[PLAYER_NAME_INDEX];
+            String playerName = args[LEAVE_PLAYER_NAME_INDEX];
             TeamsSystem.getInstance().removeFromTeam(playerName);
         }
     }
